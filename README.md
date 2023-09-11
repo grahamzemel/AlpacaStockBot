@@ -2,7 +2,13 @@
 Alpaca Stock Trading Bot built using the Alpaca API in Python. Indicators used for Signal Generation: EMA, StochRSI, and Stochastic Oscillator.
 ## Setup
 
-1. Change **AUTH/authAlpaca.txt** to your corresponding API keys (found on your [homepage](https://app.alpaca.markets/). The paper trading URL is a dummy account that funds you with $100k to experiment with (not real money, but real market data). 
+1. Change **AUTH/authAlpaca.txt** to your corresponding API keys (found on your [homepage](https://app.alpaca.markets/)). The paper trading URL is a dummy account that funds you with $100k to experiment with (not real money, but real market data).  
+
+    * Input your keys in this format: 
+    
+    `{ "APCA-API-KEY-ID" : "*******",
+    "APCA-API-SECRET-KEY" : "*************",
+    "BASE-URL" : "https://paper-api.alpaca.markets"}`
 2. Change **AUTH/ConfigFile.txt** to your desired configuration. Change the start and end date for measurements, take profit, stop loss, all that good stuff. 
 3. In **AUTH/Tickers.txt**, insert all the tickers you'd like to trade in this format: `SPY AAPL MSFT TSLA`. See file for examples.
 
