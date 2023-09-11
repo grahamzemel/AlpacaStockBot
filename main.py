@@ -21,8 +21,8 @@ tickers = open('AUTH/Tickers.txt', 'r').read() # Tickers
 tickers = tickers.split()
 
 # Function to fetch data
-def get_data(ticker, timeframe= timeframe, start_date = int(start_date), exchanges = exchange):
-    df = api.get_crypto_bars(ticker, timeframe, (dt.now() - timedelta(days = start_date)).strftime("%Y-%m-%d"), dt.now().strftime("%Y-%m-%d"), exchanges = exchange).df
+def get_data(ticker, timeframe= timeframe, start_date = int(start_date)):
+    df = api.get_bars(ticker, timeframe, (dt.now() - timedelta(days = start_date)).strftime("%Y-%m-%d"), (dt.now()-timedelta(1)).strftime("%Y-%m-%d")).df
     df.reset_index(inplace = True)
     df = df[['timestamp', 'open', 'high', 'low', 'close']]
     df.columns = ['Timestamp', 'Open', 'High', 'Low', 'Close']
@@ -50,7 +50,8 @@ def check_params(tickers, run):
                 if signal == 1:
                     mail_content = buy(ticker) # buy ticker
                     # tickers_bought.append(ticker)
-                    mail_alert(mail_content, 0)
+                    print(mail_content)
+                    # mail_alert(mail_content, 0)
                     order_csv = pd.read_csv('ORDERS/Open Orders.csv')
                     open_positions = len(list(order_csv.index))
                     run = open_positions < max_trades
@@ -72,7 +73,8 @@ def check_params(tickers, run):
                 if signal == 1:
                     
                     mail_content = buy(ticker)
-                    mail_alert(mail_content, 0)
+                    print(mail_content)
+                    # mail_alert(mail_content, 0)
                     order_csv = pd.read_csv('ORDERS/Open Orders.csv')
                     open_positions = len(list(order_csv.index))
                     run = open_positions < max_trades
@@ -92,7 +94,7 @@ def check_params(tickers, run):
                 signal_count += 1
                 if signal == 1:
                     mail_content = buy(ticker)
-                    mail_alert(mail_content, 0)
+                    print(mail_content)
                     order_csv = pd.read_csv('ORDERS/Open Orders.csv')
                     open_positions = len(list(order_csv.index))
                     run = open_positions < max_trades
@@ -131,7 +133,7 @@ def check_params(tickers, run):
                 # buy ticker with amount %capital/trade  
                 mail_content = buy(ticker)
                 # tickers_bought.append(ticker)
-                mail_alert(mail_content, 0)
+                print(mail_content)
                 order_csv = pd.read_csv('ORDERS/Open Orders.csv')
                 open_positions = len(list(order_csv.index))
                 run = open_positions < max_trades
@@ -164,7 +166,7 @@ def check_params(tickers, run):
             if len(trade_decision_list) == 2:
                 mail_content = buy(ticker)
                 # tickers_bought.append(ticker)
-                mail_alert(mail_content, 0)
+                print(mail_content)
                 order_csv = pd.read_csv('ORDERS/Open Orders.csv')
                 open_positions = len(list(order_csv.index))
                 run = open_positions < max_trades
@@ -198,7 +200,7 @@ def check_params(tickers, run):
             if len(trade_decision_list) == 2:
                 mail_content = buy(ticker)
                 # tickers_bought.append(ticker)
-                mail_alert(mail_content, 0)
+                print(mail_content)
                 order_csv = pd.read_csv('ORDERS/Open Orders.csv')
                 open_positions = len(list(order_csv.index))
                 run = open_positions < max_trades
@@ -229,7 +231,7 @@ def check_params(tickers, run):
             if len(trade_decision_list) == 2:
                 mail_content = buy(ticker)
                 # tickers_bought.append(ticker)
-                mail_alert(mail_content, 0)
+                print(mail_content)
                 order_csv = pd.read_csv('ORDERS/Open Orders.csv')
                 open_positions = len(list(order_csv.index))
                 run = open_positions < max_trades
@@ -287,7 +289,7 @@ def buy(coin_to_buy: str, trade_cap_percent = trade_capital_percent):
 #     cashBalance = api.get_account().cash
     cashToUse = investment_amount
     buy_amount = cashToUse * (trade_cap_percent * 0.01)
-    price_coin = api.get_latest_crypto_trade(coin_to_buy, exchange= 'CBSE').p
+    price_coin = api.get_latest_trade(coin_to_buy).p
     targetPositionSize = ((float(buy_amount)) / (price_coin)) # Calculates required position size
     print(coin_to_buy, targetPositionSize)
     api.submit_order(str(coin_to_buy), targetPositionSize, "buy", "market", "day") # Market order to open position    
@@ -304,7 +306,7 @@ def buy(coin_to_buy: str, trade_cap_percent = trade_capital_percent):
 
 def sell(current_coin, quantity, buy_price, highest_price):
     # sells current_stock
-    sell_price = api.get_latest_crypto_trade(str(current_coin), 'CBSE').price
+    sell_price = api.get_latest_trade(str(current_coin), 'NYSE').price
     
     api.submit_order(current_coin, quantity, 'sell', 'market', 'day')
     mail_content = '''TRADE ALERT: SELL Order Placed for {} {} at ${}'''.format(quantity, current_coin, sell_price)
@@ -317,31 +319,31 @@ def sell(current_coin, quantity, buy_price, highest_price):
     return mail_content
 
 
-def mail_alert(mail_content, sleep_time):
-    # The mail addresses and password
-    sender_address = 'sender_address'
-    sender_pass = 'sender_pass'
-    receiver_address = 'receiver_address'
+# def mail_alert(mail_content, sleep_time):
+#     # The mail addresses and password
+#     sender_address = 'sender_address'
+#     sender_pass = 'sender_pass'
+#     receiver_address = 'receiver_address'
 
-    # Setup MIME
-    message = MIMEMultipart()
-    message['From'] = 'Trading Bot'
-    message['To'] = receiver_address
-    message['Subject'] = 'Technical Trading Bot'
+#     # Setup MIME
+#     message = MIMEMultipart()
+#     message['From'] = 'Trading Bot'
+#     message['To'] = receiver_address
+#     message['Subject'] = 'Technical Trading Bot'
     
-    # The body and the attachments for the mail
-    message.attach(MIMEText(mail_content, 'plain'))
+#     # The body and the attachments for the mail
+#     message.attach(MIMEText(mail_content, 'plain'))
 
-    # Create SMTP session for sending the mail
-    session = smtplib.SMTP('smtp.gmail.com', 587)  # use gmail with port
-    session.starttls()  # enable security
+#     # Create SMTP session for sending the mail
+#     session = smtplib.SMTP('smtp.gmail.com', 587)  # use gmail with port
+#     session.starttls()  # enable security
 
-    # login with mail_id and password
-    session.login(sender_address, sender_pass)
-    text = message.as_string()
-    session.sendmail(sender_address, receiver_address, text)
-    session.quit()
-    time.sleep(sleep_time)
+#     # login with mail_id and password
+#     session.login(sender_address, sender_pass)
+#     text = message.as_string()
+#     session.sendmail(sender_address, receiver_address, text)
+#     session.quit()
+#     time.sleep(sleep_time)
 
 # global open_positions
 open_positions = len(api.list_positions())
@@ -349,7 +351,8 @@ open_positions = len(api.list_positions())
 def mainNEW(open_positions):
 
         tickers_bought = []
-        mail_alert("The Bot Started Running on {} at {}".format(dt.now().strftime("%Y-%m-%d"), dt.now().strftime("%H:%M:%S")), 0)
+        print("The Bot Started Running on {} at {}".format(dt.now().strftime("%Y-%m-%d"), dt.now().strftime("%H:%M:%S")))
+        # mail_alert("The Bot Started Running on {} at {}".format(dt.now().strftime("%Y-%m-%d"), dt.now().strftime("%H:%M:%S")), 0)
         try:
             while True:
 
@@ -361,7 +364,7 @@ def mainNEW(open_positions):
                         ticker = df.loc[i, 'Ticker']
                         quantity = df.loc[i, 'Quantity']
     #                     stop_loss_price_temp = df.loc[i, 'Stop Loss Price']
-                        curr_price = api.get_latest_crypto_trade(ticker, exchange).p
+                        curr_price = api.get_latest_trade(ticker).p
                         trailingStopActivatePrice = df.loc[i, 'ActivateTrailingStopAt']
                         target_price = df.loc[i, 'Target Price']
                         highest_price_since_buy = df.loc[i, 'Highest Price']
@@ -376,7 +379,7 @@ def mainNEW(open_positions):
 
                         if (curr_price <= lower_limit_price) or (curr_price >= target_price):
                             mail_content = sell(ticker, quantity, buy_price, highest_price_since_buy)
-                            mail_alert(mail_content, 0)
+                            # mail_alert(mail_content, 0)
                             df.drop(index = i, inplace = True)
                         else:
                             continue
@@ -439,7 +442,8 @@ def mainNEW(open_positions):
                         time.sleep(20)
         except Exception as e:
             print(e)
-            mail_alert("The Bot Stopped Running on {} at {}".format(dt.now().strftime("%Y-%m-%d"), dt.now().strftime("%H:%M:%S")), 0)
+            print("The Bot Stopped Running on {} at {}".format(dt.now().strftime("%Y-%m-%d"), dt.now().strftime("%H:%M:%S")))
+            # mail_alert("The Bot Stopped Running on {} at {}".format(dt.now().strftime("%Y-%m-%d"), dt.now().strftime("%H:%M:%S")), 0)
             
 if __name__ == "__main__":
     mainNEW(open_positions)

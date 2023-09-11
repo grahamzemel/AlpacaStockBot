@@ -1,6 +1,6 @@
 {
         "start_date": "10 days ago",
-        "end_date": "1 Jan, 2023",
+        "end_date": "10 Sep, 2023",
         "timeframe": "1Minute",
         "candle_lookback_period": 2,
 
@@ -11,7 +11,7 @@
         "trailing_stop": 0.2,
         "activate_trailing_stop_loss_at": 0.1,
         "limit_price": 0.5,
-        "exchange": "CBSE",
+        "exchange": "NYSE",
         "sleep_time_between_trades": 60,
 
         "indicators": {
