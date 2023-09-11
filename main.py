@@ -306,7 +306,7 @@ def buy(coin_to_buy: str, trade_cap_percent = trade_capital_percent):
 
 def sell(current_coin, quantity, buy_price, highest_price):
     # sells current_stock
-    sell_price = api.get_latest_trade(str(current_coin), 'NYSE').price
+    sell_price = api.get_latest_trade(str(current_coin)).price
     
     api.submit_order(current_coin, quantity, 'sell', 'market', 'day')
     mail_content = '''TRADE ALERT: SELL Order Placed for {} {} at ${}'''.format(quantity, current_coin, sell_price)

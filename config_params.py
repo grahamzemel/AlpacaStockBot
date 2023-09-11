@@ -30,7 +30,6 @@ start_date = int(start_date.split()[0])
 
 end_date = config["end_date"]
 timeframe = config["timeframe"]
-exchange = config["exchange"]
 
 # Technical Indicator (TI) Params
 ema = config['indicators']['EMA']
