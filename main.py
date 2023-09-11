@@ -22,7 +22,7 @@ tickers = tickers.split()
 
 # Function to fetch data
 def get_data(ticker, timeframe= timeframe, start_date = int(start_date)):
-    df = api.get_bars(ticker, timeframe, (dt.now() - timedelta(days = start_date)).strftime("%Y-%m-%d"), (dt.now()-timedelta(1)).strftime("%Y-%m-%d")).df
+    df = api.get_bars(ticker, timeframe, (dt.now() - timedelta(days = start_date)).strftime("%Y-%m-%d"), (dt.now()-timedelta(days=1)).strftime("%Y-%m-%d")).df
     df.reset_index(inplace = True)
     df = df[['timestamp', 'open', 'high', 'low', 'close']]
     df.columns = ['Timestamp', 'Open', 'High', 'Low', 'Close']
